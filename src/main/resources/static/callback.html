@@ -35,9 +35,7 @@ $(document).ready(function(){
 			      }
 	    , contentType : "application/x-www-form-urlencoded"
 		, success:function(json) {
-			//alert("access_token:"+json.token_reponse.access_token+", refresh_token:"+json.token_reponse.refresh_token
-			//		+"expires_in: "+json.token_reponse.expires_in);
-			alert(JSON.stringify(json));
+			//alert(JSON.stringify(json));
 			
 			localStorage.setItem('access_token',json.token_reponse.access_token);
 			localStorage.setItem('refresh_token',json.token_reponse.refresh_token);

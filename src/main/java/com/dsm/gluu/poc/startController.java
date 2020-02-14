@@ -24,6 +24,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
@@ -45,6 +46,18 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper; 
 @Controller
 public class startController {
+	
+	@Value("${code.client_id}")
+	private String codeClientId;
+	
+	@Value("${code.client_secret}")
+	private String codeClientSecret;
+	
+	@Value("${password.client_id}")
+	private String pwClientId;
+	
+	@Value("${password.client_secret}")
+	private String pwClientSecret;
 	
 	private static final Logger log = LoggerFactory.getLogger(GluuPoc1Application.class);
 	private ObjectMapper objectMapper;
@@ -68,7 +81,7 @@ public class startController {
 	    body.add("scope", param.get("scope"));
 	    body.add("code", param.get("code"));
 	    body.add("grant_type", "authorization_code");
-	    body.add("redirect_uri", "http://localhost:8080/oauth/test");
+	    body.add("redirect_uri", "http://192.168.0.191:8080/oauth/test");
 
 	    Map<String, Object> out = new HashMap<>();
 	    out.put("authorize_response", param);
@@ -124,7 +137,7 @@ public class startController {
 	    body.add("scope", param.get("scope"));
 	    body.add("code", param.get("code"));
 	    body.add("grant_type", "authorization_code");
-	    body.add("redirect_uri", "http://localhost:8080/oauth/test");
+	    body.add("redirect_uri", "http://192.168.0.191:8080/oauth/test");
 
 	    Map<String, Object> out = new HashMap<>();
 	    out.put("authorize_response", param);
@@ -175,6 +188,9 @@ public class startController {
 
 		log.info("authorize - resource");
 		
+		log.info("name : "+ username);
+		log.info("password : "+ password);
+		
 		String tokenUrl = "https://gluu.dsmcorps.com/oxauth/restv1/token";
 
 	    RestTemplate restTemplate = sslIgnoreRestTemplate();
@@ -184,7 +200,7 @@ public class startController {
 	    body.add("grant_type", "password");
 	    body.add("username", username);
 	    body.add("password", password);
-	    body.add("redirect_uri", "http://localhost:8080/oauth/test");
+	    //body.add("redirect_uri", "http://192.168.0.191:8080/oauth/test");
 
 	    Map<String, Object> out = new HashMap<>();
 
@@ -197,7 +213,17 @@ public class startController {
 	                  .contentType(MediaType.APPLICATION_FORM_URLENCODED)
 	                  .body(body),
 	              new ParameterizedTypeReference<HashMap<String, Object>>() {});
-	      out.put("response", responseEntity.getBody());
+	      out.put("token_reponse", responseEntity.getBody());
+	      
+	      @SuppressWarnings("ConstantConditions")
+	      final String idToken = (String) responseEntity.getBody().get("id_token");
+	      log.info("idToken:"+idToken);
+	      
+	      final String payload =
+	          new String(Base64.getDecoder().decode(idToken.split("\\.")[1]));
+
+	      out.put("access_token_decoding", objectMapper.readValue(payload, HashMap.class));
+	      
 	    } catch (HttpClientErrorException e) {
 	      out.put("token_response",
 	          objectMapper.readValue(
@@ -353,6 +379,45 @@ public class startController {
 	    return out;
 	    
 	  }
+	  
+	  @RequestMapping("/oauth/service1")
+	  public String service1(@RequestParam Map<?, ?> param) throws NoSuchAlgorithmException,
+	      KeyStoreException, KeyManagementException, IOException {
+
+	    log.info("authorize - service1");
+
+	    RestTemplate restTemplate = sslIgnoreRestTemplate();
+
+	    MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+
+	    Map<String, Object> out = new HashMap<>();
+	    out.put("authorize_response", param);
+
+	    try {
+	      @SuppressWarnings("Convert2Diamond")
+	      ResponseEntity<HashMap<?, ?>> response = restTemplate.exchange(
+	          RequestEntity
+	              .post(URI.create("https://gluugw.dsmcorps.com"))
+	              .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+	              .header("Host", "ec2-52-79-177-171.ap-northeast-2.compute.amazonaws.com")
+	              .body(body),
+	          new ParameterizedTypeReference<HashMap<?, ?>>() {});
+	      out.put("token_reponse", response.getBody());
+
+
+	    } catch (HttpClientErrorException e) {
+	      out.put("token_response",
+	          objectMapper.readValue(
+	              e.getResponseBodyAsString(), new TypeReference<HashMap<String, Object>>() {}));
+	    } catch (RestClientException e) {
+	      log.error("error", e);
+	    }
+	    
+	    
+	    return "https://gluugw.dsmcorps.com";
+	    
+	    
+	  }
 
 
 	 
@@ -363,12 +428,12 @@ public class startController {
 
 	  private String passwordClientCredential() {
 	    return Base64.getEncoder().encodeToString(
-	        "323a2818-32c8-4f85-8243-5f941d8a4eb7:cVGOXBzhQ3D1NFxC0CijG6kP".getBytes());
+	    		(pwClientId+":"+pwClientSecret).getBytes());
 	  }
 	  
 	  private String pocClientCredential() {
 		    return Base64.getEncoder().encodeToString(
-		        "d8c074dd-9232-42a2-8d48-d004a2325f0a:ICU9ILRmww4uQPKrhPVzbeoO".getBytes());
+		        (codeClientId+":"+codeClientSecret).getBytes());
 		  }
 	
 	private RestTemplate sslIgnoreRestTemplate()
