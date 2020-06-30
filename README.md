@@ -1,13 +1,8 @@
 # Gluu Project
 
 
-# 사내 gluu 서버
-https://testgluu.dsmcorps.com
-
-
-# Gluu Test Page
-http://ec2-15-164-100-174.ap-northeast-2.compute.amazonaws.com:8090/
-
+# 사내 gluu 서버 
+준비중
 
 - Authorization Code Flow 테스트
 
@@ -45,7 +40,6 @@ localhost 환경 구축 후 test 진행
 # 과제
 1. 현재 project를 local에 구성 해 보기
 2. local에서 정상 test 확인 해 보기
-3. 현재 project를 PHP로 변경 해 보기 (최종)
 
 # local 변경 사항
 
