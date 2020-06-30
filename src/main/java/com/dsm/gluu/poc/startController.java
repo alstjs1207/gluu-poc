@@ -81,7 +81,7 @@ public class startController {
 	    body.add("scope", param.get("scope"));
 	    body.add("code", param.get("code"));
 	    body.add("grant_type", "authorization_code");
-	    body.add("redirect_uri", "http://192.168.0.191:8080/oauth/test");
+	    body.add("redirect_uri", "http://192.168.0.191:8088/oauth/test");
 
 	    Map<String, Object> out = new HashMap<>();
 	    out.put("authorize_response", param);
@@ -90,7 +90,7 @@ public class startController {
 //	      @SuppressWarnings("Convert2Diamond")
 //	      ResponseEntity<HashMap<?, ?>> response = restTemplate.exchange(
 //	          RequestEntity
-//	              .post(URI.create("https://gluu.dsmcorps.com/oxauth/restv1/token"))
+//	              .post(URI.create("https://awsgluu.dsmcorps.com/oxauth/restv1/token"))
 //	              .contentType(MediaType.APPLICATION_FORM_URLENCODED)
 //	              .header("Authorization", "Basic " + pocClientCredential())
 //	              .body(body),
@@ -129,7 +129,7 @@ public class startController {
 		 log.info("scope:"+param.get("scope"));
 		 log.info("code:"+param.get("code"));
 		
-	    String tokenUrl = "https://gluu.dsmcorps.com/oxauth/restv1/token";
+	    String tokenUrl = "https://awsgluu.dsmcorps.com/oxauth/restv1/token";
 
 	    RestTemplate restTemplate = sslIgnoreRestTemplate();
 
@@ -137,7 +137,7 @@ public class startController {
 	    body.add("scope", param.get("scope"));
 	    body.add("code", param.get("code"));
 	    body.add("grant_type", "authorization_code");
-	    body.add("redirect_uri", "http://192.168.0.191:8080/oauth/test");
+	    body.add("redirect_uri", "http://192.168.0.191:8088/oauth/test");
 
 	    Map<String, Object> out = new HashMap<>();
 	    out.put("authorize_response", param);
@@ -191,7 +191,7 @@ public class startController {
 		log.info("name : "+ username);
 		log.info("password : "+ password);
 		
-		String tokenUrl = "https://gluu.dsmcorps.com/oxauth/restv1/token";
+		String tokenUrl = "https://awsgluu.dsmcorps.com/oxauth/restv1/token";
 
 	    RestTemplate restTemplate = sslIgnoreRestTemplate();
 
@@ -200,7 +200,7 @@ public class startController {
 	    body.add("grant_type", "password");
 	    body.add("username", username);
 	    body.add("password", password);
-	    //body.add("redirect_uri", "http://192.168.0.191:8080/oauth/test");
+	    //body.add("redirect_uri", "http://192.168.0.191:8088/oauth/test");
 
 	    Map<String, Object> out = new HashMap<>();
 
@@ -238,7 +238,7 @@ public class startController {
 	 @RequestMapping("/oauth/client")
 	  public Object test4() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, IOException {
 
-	    String tokenUrl = "https://gluu.dsmcorps.com/oxauth/restv1/token";
+	    String tokenUrl = "https://awsgluu.dsmcorps.com/oxauth/restv1/token";
 
 	    RestTemplate restTemplate = sslIgnoreRestTemplate();
 
@@ -275,7 +275,7 @@ public class startController {
 			  ) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, IOException {
 
 	    log.info("userInfo");  
-	    String userInfoUrl = "https://gluu.dsmcorps.com/oxauth/restv1/userinfo";
+	    String userInfoUrl = "https://awsgluu.dsmcorps.com/oxauth/restv1/userinfo";
 
 	    boolean systemCheck = true;
 	    RestTemplate restTemplate = sslIgnoreRestTemplate();
@@ -286,7 +286,7 @@ public class startController {
 //	    out1 = verify(accessToken);
 //	    log.info("verify: "+out1.toString());
 	    
-	    boolean check =  verifySignature("ICU9ILRmww4uQPKrhPVzbeoO",
+	    boolean check =  verifySignature("Tb5CiVfFMn8jCmnwYl3QMfuubjvIPvbwECpU1fED",
 	    		accessToken.split("\\.")[0]+"."+accessToken.split("\\.")[1],accessToken.split("\\.")[2]);
 	    
 	    if (check){
@@ -347,7 +347,7 @@ public class startController {
 			  ) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, IOException {
 
 	    log.info("refreshAccessToken");  
-	    String tokenUrl = "https://gluu.dsmcorps.com/oxauth/restv1/token";
+	    String tokenUrl = "https://awsgluu.dsmcorps.com/oxauth/restv1/token";
 
 	    RestTemplate restTemplate = sslIgnoreRestTemplate();
 
@@ -461,7 +461,7 @@ public class startController {
 	private Map<String, Object> verify(String token
 			) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, IOException{
 		
-		String verifyUrl = "https://gluu.dsmcorps.com/oxauth/restv1/introspection";
+		String verifyUrl = "https://awsgluu.dsmcorps.com/oxauth/restv1/introspection";
 
 	    RestTemplate restTemplate = sslIgnoreRestTemplate();
 
