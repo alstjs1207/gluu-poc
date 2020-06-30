@@ -44,6 +44,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper; 
+
+/** gluu SAML branch »ý¼º
+ * 
+ * @author HyunWoo
+ *
+ */
+
 @Controller
 public class startController {
 	
